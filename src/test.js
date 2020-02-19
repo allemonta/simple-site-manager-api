@@ -1,8 +1,11 @@
-const mysql = require('mysql');
-const config = require('./config')
-const db = require('./db/db')
+const mongoose = require('./db/mongoose')
+const Item = require("./models/item")
+const Section = require("./models/section")
+const User = require("./models/user")
 
 var prime = [
+    {title: " Sicurezza nei laboratori ", path: "PDF/prime/00a_sicurezza_nei_laboratori.pdf", class: "list-group-item"},
+    {title: " Sicurezza videoterminali ", path: "PDF/prime/00b_sicurezzaVDT.pdf", class: "list-group-item"},
     {title: " Sistemi di elaborazione ", path: "PDF/prime/01_Sistemi_di_elaborazione.pdf", class: "list-group-item"},
     {title: " Sistemi di elaborazione - ridotto ", path: "PDF/prime/01_Sistemi_di_elaborazione_ridotto.pdf", class: "list-group-item"},
     {title: " Linguaggio binario ", path: "PDF/prime/02_linguaggio_binario.pdf", class: "list-group-item"},
@@ -55,3 +58,28 @@ var olimpiadi = [
     {title: " File C++ della demo della piattaforma alle territoriali ", path: "/olimpiadi/territoriali.olinfo.it.zip", class: "list-group-item"}
 ];
 
+
+/*
+
+const f = async () => {
+
+    for (i in olimpiadi)
+    {
+        olimpiadi[i].sectionId = "5e4d658bf1691f1d845b6dd9"
+        olimpiadi[i].classes = olimpiadi[i].class
+        olimpiadi[i].class = undefined
+        olimpiadi[i].visible = true
+
+        item = new Item(olimpiadi[i])
+        await item.save()
+    }
+
+    try {
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+f()
+
+*/

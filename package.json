@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
   },
   "author": "",
   "license": "ISC",
@@ -12,10 +13,13 @@
     "nodemon": "^2.0.2"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "mongoose": "^5.9.1",
     "mysql": "^2.18.1",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "validator": "^12.2.0"
   }
 }
