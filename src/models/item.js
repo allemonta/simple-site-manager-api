@@ -15,27 +15,17 @@ const itemSchema = new mongoose.Schema({
         type: String,
         trim: true
     },
-    sectionId: {
-        type: String,
-        required: true
-    },
     visible: {
         type: Boolean,
         required: false,
         default: false
+    },
+    section: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'Section'
     }
 })
-
-
-/*
-
-itemSchema.pre('save', async function (next) {
-    const item = this
-    next()
-})
-
-*/
-
 
 const Item = mongoose.model('Item', itemSchema)
 

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const Item = require('./item')
 
 const sectionSchema = new mongoose.Schema({
     title: {
@@ -13,16 +14,17 @@ const sectionSchema = new mongoose.Schema({
     }
 })
 
-
-/*
-
-sectionSchema.pre('save', async function (next) {
-    const section = this
-    next()
+sectionSchema.virtual('items', {
+    ref: 'Item',
+    localField: '_id',
+    foreignField: 'section'
 })
 
-*/
-
+sectionSchema.pre('delete', async function (next) {
+    const section = this
+    Item.deleteMany({ section: section._id})
+    next()
+})
 
 const Section = mongoose.model('Section', sectionSchema)
 

@@ -1,8 +1,9 @@
 const express = require('express')
 const Section = require('../models/section')
+const auth = require('../middleware/auth')
 const router = new express.Router()
 
-router.post('/sections', async (req, res) => {
+router.post('/sections', auth, async (req, res) => {
     const section = new Section(req.body)
 
     try {
@@ -14,7 +15,7 @@ router.post('/sections', async (req, res) => {
 })
 
 router.get('/sections', async (req, res) => {
-        try {
+    try {
         const sections = await Section.find({})
         res.send(sections)
     } catch (e) {
@@ -37,7 +38,7 @@ router.get('/sections/:id', async (req, res) => {
     }
 })
 
-router.patch('/sections/:id', async (req, res) => {
+router.patch('/sections/:id', auth, async (req, res) => {
     const _id = req.params.id
     const allowedUpdates = ['title', 'visible']
     const updates = Object.keys(req.body)
@@ -64,7 +65,7 @@ router.patch('/sections/:id', async (req, res) => {
     }
 })
 
-router.delete('/sections/:id', async (req, res) => {
+router.delete('/sections/:id', auth, async (req, res) => {
     const _id = req.params.id
 
     try {

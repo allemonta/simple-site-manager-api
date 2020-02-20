@@ -1,4 +1,5 @@
 const express = require('express')
+const auth = require('../middleware/auth')
 const User = require('../models/user')
 const router = new express.Router()
 
@@ -14,7 +15,39 @@ router.post('/users', async (req, res) => {
     }
 })
 
-/* Get all users */
+router.post('/users/login', async (req, res) => {
+    try {
+        const user = await User.findByCredentials(req.body.email, req.body.password)
+        const token = await user.generateAuthToken()
+        res.send({ user, token })
+    } catch (e) {
+        res.status(400).send()
+    }
+})
+
+router.post("/users/logout", auth, async (req, res) => {
+    try {
+        req.user.tokens = req.user.tokens.filter((token) => {
+            return token.token !== req.token
+        })
+        await req.user.save()
+        res.send()
+    } catch (error) {
+        res.status(500).send()
+    }
+})
+
+router.post("/users/logoutall", auth, async (req, res) => {
+    try {
+        req.user.tokens = []
+        await req.user.save()
+        res.send()
+    } catch (error) {
+        res.status(500).send()
+    }
+})
+
+/* Get all users  */
 router.get('/users', async (req, res) => {
     try {
         const users = await User.find({})
@@ -24,36 +57,13 @@ router.get('/users', async (req, res) => {
     }
 })
 
-/* Get a user specified by an id */
-router.get('/users/:id', async (req, res) => {
-    /* Retrieve the id passed on the URL */
-    const _id = req.params.id
-
-    try {
-        /* Search the user */
-        const user = await User.findById(_id)
-
-        /* If there isn't a user with the passed id... */
-        if (!user) {
-            return res.status(404).send()
-        }
-
-        /* If there is an user with the passed id... */
-        res.send(user)
-    } catch (e) {
-        res.status(500).send()
-    }
+router.get('/users/me', auth, async (req, res) => {
+    res.send(req.user)
 })
 
-/* Update an user specified by id */
-router.patch('/users/:id', async (req, res) => {
-    /* I decide the updates allowed */
+router.patch('/users/me', auth, async (req, res) => {
     const allowedUpdates = ['name', 'surname', 'email', 'password']
-
-    /* Retrieve the key of the object passed */
     const updates = Object.keys(req.body)
-
-    /* I check if there is an operation not allowed, like ID */
     const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
 
     if (!isValidOperation) {
@@ -61,36 +71,19 @@ router.patch('/users/:id', async (req, res) => {
     }
 
     try {
-        /* Search for the user */
-        const user = await User.findById(req.params.id)
-
-        /* Update the specified field */
-        updates.forEach((update) => user[update] = req.body[update])
-
-        /* Save the user */
-        await user.save()
-
-        /* If the user isn't found */
-        if (!user) {
-            return res.status(404).send()
-        }
-
-        /* If the user is found and updated */
-        res.send(user)
+        updates.forEach((update) => req.user[update] = req.body[update])
+        await req.user.save()
+        res.send(req.user)
     } catch (e) {
         res.status(400).send(e)
     }
 })
 
-router.delete('/users/:id', async (req, res) => {
+router.delete('/users/me', auth, async (req, res) => {
     try {
-        const user = await User.findByIdAndDelete(req.params.id)
+        await req.user.delete()
 
-        if (!user) {
-            return res.status(404).send()
-        }
-
-        res.send(user)
+        res.send(req.user)
     } catch (e) {
         res.status(500).send()
     }
