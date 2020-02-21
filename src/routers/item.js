@@ -41,7 +41,7 @@ router.get('/items/:id', async (req, res) => {
     }
 })
 
-router.patch('/items/:id', (auth), async (req, res) => {
+router.patch('/items/:id', auth, async (req, res) => {
     const allowedUpdates = ['title', 'path', 'classes', 'sectionId', 'visible']
     const updates = Object.keys(req.body)
     const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
@@ -67,7 +67,7 @@ router.patch('/items/:id', (auth), async (req, res) => {
     }
 })
 
-router.delete('/items/:id', (auth), async (req, res) => {
+router.delete('/items/:id', auth, async (req, res) => {
     try {
         const item = await Item.findByIdAndDelete(req.params.id)
 

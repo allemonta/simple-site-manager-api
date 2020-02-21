@@ -45,6 +45,12 @@ const userSchema = new mongoose.Schema({
     }]
 })
 
+sectionSchema.virtual('sections', {
+    ref: 'Section',
+    localField: '_id',
+    foreignField: 'owner'
+})
+
 userSchema.pre('save', async function (next) {
     const user = this
 
